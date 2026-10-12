@@ -1,0 +1,49 @@
+services:
+  fraud-api:
+    build: .
+    container_name: fraud-api
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./logs:/app/logs
+    depends_on:
+      - db
+    restart: always
+
+  db:
+    image: postgres:15
+    container_name: fraud-db
+    environment:
+      POSTGRES_USER: frauduser
+      POSTGRES_PASSWORD: fraudpass
+      POSTGRES_DB: fraudlogs
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+
+  prometheus:
+    image: prom/prometheus
+    container_name: fraud-prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    depends_on:
+      - fraud-api
+    restart: always
+
+  grafana:
+    image: grafana/grafana
+    container_name: fraud-grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    restart: always
+
+volumes:
+  postgres_data:

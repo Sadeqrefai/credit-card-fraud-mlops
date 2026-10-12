@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+joblib
+numpy
+scikit-learn
+xgboost
+python-dotenv
+psycopg2-binary
+SQLAlchemy
+prometheus-fastapi-instrumentator
